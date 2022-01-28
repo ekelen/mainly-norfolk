@@ -1,0 +1,20 @@
+{
+    "name": "frontendmasters-serverless",
+    "scripts": {
+        "dev": "eleventy --serve",
+        "build": "eleventy"
+    },
+    "author": "Elizabeth Kelen <erskelen@gmail.com>",
+    "devDependencies": {
+        "@11ty/eleventy": "^0.11.0"
+    },
+    "dependencies": {
+        "node-fetch": "^2.6.0"
+    },
+    "repository": {
+        "type": "git"
+    },
+    "license": "CC-BY-NC-SA-4.0",
+    "version": "1.0.0",
+    "private": true
+}
