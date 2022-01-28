@@ -1,0 +1,12 @@
+{
+    "targets": "since 2019",
+    "presets": [
+      [
+        "@babel/preset-react",
+        {
+          "runtime": "automatic"
+        }
+      ]
+    ]
+  }
+  

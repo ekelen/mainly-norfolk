@@ -1,15 +1,26 @@
 {
     "name": "mainly-norfolk-parser",
     "scripts": {
-        "dev": "eleventy --serve",
-        "build": "eleventy"
+        "dev": "parcel src/index.html",
+        "build": "parcel build src/index.html"
     },
     "author": "Elizabeth Kelen <erskelen@gmail.com>",
     "devDependencies": {
-        "@11ty/eleventy": "^0.11.0"
+        "@babel/core": "^7.16.12",
+        "@babel/preset-env": "^7.16.11",
+        "@babel/preset-react": "^7.16.7",
+        "eslint": "^8.7.0",
+        "eslint-plugin-import": "^2.25.4",
+        "eslint-plugin-prettier": "^4.0.0",
+        "eslint-plugin-react": "^7.28.0",
+        "parcel": "^2.2.1",
+        "parcel-bundler": "^1.12.5",
+        "prettier": "^2.5.1"
     },
     "dependencies": {
-        "node-fetch": "^2.6.0"
+        "node-fetch": "^2.6.0",
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2"
     },
     "repository": {
         "type": "git"

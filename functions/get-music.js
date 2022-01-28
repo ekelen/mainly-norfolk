@@ -1,10 +1,7 @@
 const fetch = require("node-fetch");
 
 exports.handler = async (event, context) => {
-  console.log(`[=] event:`, event);
-  console.log(`[=] context:`, context);
   const { href } = JSON.parse(event.body);
-  console.log(`[=] href:`, href);
   try {
     const response = await fetch(href + ".json");
     const data = await response.json();
