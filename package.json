@@ -1,5 +1,5 @@
 {
-    "name": "frontendmasters-serverless",
+    "name": "mainly-norfolk-parser",
     "scripts": {
         "dev": "eleventy --serve",
         "build": "eleventy"
