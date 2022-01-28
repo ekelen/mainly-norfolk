@@ -6,14 +6,14 @@ if (module.hot) {
 }
 
 const Verse = (props) => {
-  return <div>{props.children}</div>;
+  return <p>{props.children}</p>;
 };
 const Text = (props) => {
   return (
     <div>
       <h1>{props.heading}</h1>
       {props.verses.map((v, i) => (
-        <Verse key={i}>{v}</Verse>
+        <Verse key={i}>{`${v}`}</Verse>
       ))}
     </div>
   );
@@ -21,6 +21,7 @@ const Text = (props) => {
 
 const App = () => {
   const [stuff, setStuff] = useState([]);
+  const statusRef = useRef(null);
 
   const mnhref = useRef("");
 
@@ -34,9 +35,9 @@ const App = () => {
     })
       .then((response) => {
         console.log(`[=] response:`, response);
-        document.querySelector(
-          ".message"
-        ).innerText = `Response: ${response.status} — ${response.statusText}`;
+        if (statusRef.current) {
+          statusRef.current.innerText = `Response: ${response.status} — ${response.statusText}`;
+        }
 
         return response.json();
       })
@@ -48,6 +49,7 @@ const App = () => {
   return (
     <div>
       <h1>Songs!</h1>
+      <blockquote ref={statusRef}></blockquote>
       <form id="mnform" name="mnform" onSubmit={(e) => getStuff(e)}>
         <label htmlFor="mnhref">None</label>
         <input
