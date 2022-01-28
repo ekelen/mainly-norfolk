@@ -6,9 +6,6 @@
     },
     "author": "Elizabeth Kelen <erskelen@gmail.com>",
     "devDependencies": {
-        "@babel/core": "^7.16.12",
-        "@babel/preset-env": "^7.16.11",
-        "@babel/preset-react": "^7.16.7",
         "eslint": "^8.7.0",
         "eslint-plugin-import": "^2.25.4",
         "eslint-plugin-prettier": "^4.0.0",
