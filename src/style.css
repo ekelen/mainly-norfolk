@@ -1,5 +1,13 @@
 body {
-  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  font-family: "Averia Serif Libre", Cambria, Cochin, Georgia, Times,
+    "Times New Roman", serif;
+  background-color: hsl(240, 10%, 10%);
+  color: rgb(209, 209, 209);
+}
+
+pre {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 1rem;
 }
 
 h1,
@@ -21,8 +29,153 @@ div.home {
   margin: 1rem auto;
 }
 
+div.card.outer {
+  padding: 2rem;
+  border-radius: 0.4rem;
+  background-color: #333;
+  display: flex;
+  margin-bottom: 2rem;
+}
+
+h1 {
+  font-size: 2rem;
+  margin-bottom: 0.3rem;
+}
+
+h2,
+h3 {
+  font-size: 2rem;
+  margin-bottom: 0.3rem;
+}
+
+h4 {
+  font-size: 1.4rem;
+  margin-bottom: 0.2rem;
+}
+
+a,
+div.card.outer a {
+  color: rgb(104, 154, 170);
+}
+
+div.card.outer a.button {
+  color: white;
+}
+
+div.card ul {
+  list-style-type: none;
+}
+
+li {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: x-small;
+}
+
+div.card .link {
+  color: rgb(104, 154, 170);
+}
+
+div.card .button-outline {
+  color: rgb(104, 154, 170);
+  border-color: rgb(104, 154, 170);
+}
+
+/* div.card .button,
+div.card button,
+div.card a.button.button-small {
+  background-color: rgb(104, 154, 170);
+  border: 0.1rem solid rgb(104, 154, 170);
+  color: #222;
+} */
+
+.button,
+a.button,
+button,
+input[type="button"],
+input[type="reset"],
+input[type="submit"] {
+  background-color: rgb(104, 154, 170);
+  border: 0.1rem solid rgb(104, 154, 170);
+  color: #fff;
+  font-family: "Averia Serif Libre", Cambria, Cochin, Georgia, Times,
+    "Times New Roman", serif;
+}
+
+input[type="color"],
+input[type="date"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="email"],
+input[type="month"],
+input[type="number"],
+input[type="password"],
+input[type="search"],
+input[type="tel"],
+input[type="text"],
+input[type="url"],
+input[type="week"],
+input:not([type]),
+textarea,
+select {
+  color: white;
+  font-family: "Averia Serif Libre", Cambria, Cochin, Georgia, Times,
+    "Times New Roman", serif;
+}
+
+input[type="color"]:focus,
+input[type="date"]:focus,
+input[type="datetime"]:focus,
+input[type="datetime-local"]:focus,
+input[type="email"]:focus,
+input[type="month"]:focus,
+input[type="number"]:focus,
+input[type="password"]:focus,
+input[type="search"]:focus,
+input[type="tel"]:focus,
+input[type="text"]:focus,
+input[type="url"]:focus,
+input[type="week"]:focus,
+input:not([type]):focus,
+textarea:focus,
+select:focus {
+  border-color: rgb(104, 154, 170);
+  outline: 0;
+  color: rgb(104, 154, 170);
+}
+
+div.card.outer.activeForm {
+  box-shadow: 1.5px 1.5px 10px 0px rgba(104, 154, 170, 0.4);
+  border: 4px double rgba(104, 154, 170, 0.9);
+}
+
+div.card.outer {
+  box-shadow: 1.5px 1.5px 10px 0px rgba(104, 154, 170, 0);
+  border: 4px double rgba(104, 154, 170, 0);
+}
+
+div.card.inner {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+}
+
+.basis-100 {
+  flex-basis: 100%;
+  flex-shrink: 0;
+}
+
+div.card.section {
+  margin: 0;
+  padding-bottom: 1rem;
+  flex-basis: 100%;
+  flex-shrink: 0;
+}
+
 .link {
-  color: #9b4dca;
+  color: rgb(104, 154, 170);
   text-decoration: none;
   cursor: pointer;
 }
@@ -32,21 +185,65 @@ div.home {
   color: #606c76;
 }
 
-form {
-  border: 1px solid gray;
-  padding: 1rem;
-}
-
 label {
   font-weight: normal;
 }
 
+.button,
 button,
-.button {
-  margin-right: 0.5rem;
+input[type="button"],
+input[type="reset"],
+input[type="submit"] {
+  background-color: rgb(104, 154, 170);
+  border: 0.1rem solid rgb(104, 154, 170);
+  color: #fff;
 }
 
-button.activeForm {
+.button:focus,
+.button:hover,
+button:focus,
+button:hover,
+input[type="button"]:focus,
+input[type="button"]:hover,
+input[type="reset"]:focus,
+input[type="reset"]:hover,
+input[type="submit"]:focus,
+input[type="submit"]:hover {
+  background-color: #606c76;
+  border-color: #606c76;
+  color: #fff;
+  outline: 0;
+}
+
+.button.button-outline,
+button.button-outline,
+input[type="button"].button-outline,
+input[type="reset"].button-outline,
+input[type="submit"].button-outline {
+  background-color: transparent;
+  color: rgb(104, 154, 170);
+}
+
+.button.button-outline:focus,
+.button.button-outline:hover,
+button.button-outline:focus,
+button.button-outline:hover,
+input[type="button"].button-outline:focus,
+input[type="button"].button-outline:hover,
+input[type="reset"].button-outline:focus,
+input[type="reset"].button-outline:hover,
+input[type="submit"].button-outline:focus,
+input[type="submit"].button-outline:hover {
+  background-color: transparent;
+  border-color: #606c76;
+  color: #606c76;
+}
+
+button.activeForm:focus,
+button.button:focus,
+button.button:active,
+a.button:focus,
+a:focus {
   outline: 1px;
   outline-offset: 2px;
   outline-color: rgb(104, 154, 170);
@@ -80,12 +277,29 @@ button.invisible,
   margin-right: 3px;
 }
 
-.highlight {
-  background-color: yellow;
-  color: #333;
+div.card .highlight {
+  /* background-color: rgba(0, 0, 0, 0); */
+  text-decoration: underline double;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: rgb(155, 232, 232);
+}
+
+div.card .disabled {
+  background-color: rgba(255, 255, 255, 0);
+  color: gray;
+  text-decoration: none;
+  cursor: default;
 }
 
 p {
   line-height: 1.2em;
   margin-bottom: 0.12rem;
+}
+
+.round {
+  border-radius: 0.4rem;
+}
+
+.border {
+  border: 0.1rem solid #d1d1d1;
 }

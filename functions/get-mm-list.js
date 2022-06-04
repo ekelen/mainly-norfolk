@@ -58,7 +58,9 @@ const getTracks = async (query = "") => {
     }
   });
   const goodLinks = links.filter((l) => !!l.href);
-  goodLinks.forEach(hashIt);
+  goodLinks.forEach((l) =>
+    hashIt({ artist: l.artist, href: l.href, track: l.track })
+  );
   return goodLinks;
 };
 

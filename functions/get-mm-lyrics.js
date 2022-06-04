@@ -50,7 +50,7 @@ const getLyricsFromPage = async (uri = "") => {
   verses = verses.map((l) => `${l.text}`).join("\n");
   verses = verses.split("\n\n");
   const result = { artist, track, verses, source };
-  result.hash = hashIt(result);
+  result.hash = hashIt({ artist, href: source, track });
   return result;
 };
 

@@ -60,48 +60,37 @@ const Copy = (props = { text: "" }) => {
   });
   return (
     <button
-      className="button button-small "
-      onClick={(e) => {
+      className="button button-small"
+      onClick={(_e) => {
         navigator.clipboard.writeText(props.text);
         setShowCopySuccess(true);
       }}
     >
-      {showCopySuccess ? "Copied" : "Copy"}
+      {showCopySuccess ? (
+        <>
+          <i className="fa-solid fa-check start-enhancer"></i>Copied
+        </>
+      ) : (
+        <>
+          <i className="fa-solid fa-copy start-enhancer"></i>Copy
+        </>
+      )}
     </button>
-  );
-};
-
-const YoutubeSearch = ({ artist = "", track = "", fallbackTitle = "" }) => {
-  const searchItem =
-    artist && track ? `${artist} ${track}` : fallbackTitle || track;
-  console.log(`[=] searchItem:`, searchItem);
-  return (
-    <a
-      className="button button-small"
-      href={`https://www.youtube.com/results?search_query=${encodeURIComponent(
-        searchItem
-      )}`}
-      target="_blank"
-    >
-      YouTube <i className="fa-solid fa-arrow-up-right-from-square"></i>
-    </a>
   );
 };
 
 const Verses = ({ verses = [] }) => {
   return (
-    <div className="column">
-      <>
-        <div className="row">
-          <Copy text={verses.join("\n\n")} />
-        </div>
-        <div>
-          {verses.map((v, i) => (
-            <Verse key={i} verse={v} />
-          ))}
-        </div>
-      </>
-    </div>
+    <>
+      <div>
+        <Copy text={verses.join("\n\n")} />
+      </div>
+      <div>
+        {verses.map((v, i) => (
+          <Verse key={i} verse={v} />
+        ))}
+      </div>
+    </>
   );
 };
 
@@ -219,58 +208,60 @@ const SearchForm = ({
 }) => {
   const [formActive, setFormActive] = useState(false);
   return (
-    <div
-      style={{
-        backgroundColor: `${formActive ? "#f0f0f0" : "transparent"}`,
-      }}
-    >
-      <form
-        id={formId}
-        name={formId}
-        onSubmit={(e) => {
-          e.preventDefault();
-          onSubmit();
-        }}
-      >
-        <label htmlFor={`${formId}-field`}>{inputName}</label>
-        <input
-          autoFocus={autoFocus}
-          onFocus={() => {
-            setFormActive(true);
-          }}
-          onBlur={() => {
-            setFormActive(false);
-          }}
-          type="text"
-          id={`${formId}-field`}
-          name={`${formId}-field`}
-          value={query}
-          onChange={(e) => {
-            inputHandler(e.target.value);
-          }}
-        />
-        <button
-          type="submit"
-          className={formActive && "activeForm"}
-          onFocus={(e) => setFormActive(true)}
-          onBlur={(e) => setFormActive(false)}
-        >
-          {loading ? "Loading..." : "Search"}
-        </button>
-        <button
-          type="reset"
-          className={formActive && "activeForm"}
-          onFocus={(e) => setFormActive(true)}
-          onBlur={(e) => setFormActive(false)}
-          onClick={(e) => {
+    <div className={`card outer ${formActive ? "activeForm" : undefined}`}>
+      <div className="card inner">
+        <form
+          id={formId}
+          name={formId}
+          onSubmit={(e) => {
             e.preventDefault();
-            onClear();
+            onSubmit();
           }}
-          disabled={loading || !query}
+          className="card section"
         >
-          Clear
-        </button>
-      </form>
+          <label htmlFor={`${formId}-field`}>{inputName}</label>
+          <input
+            autoFocus={autoFocus}
+            onFocus={() => {
+              setFormActive(true);
+            }}
+            onBlur={() => {
+              setFormActive(false);
+            }}
+            type="text"
+            id={`${formId}-field`}
+            name={`${formId}-field`}
+            value={query}
+            onChange={(e) => {
+              inputHandler(e.target.value);
+            }}
+          />
+          <button
+            type="submit"
+            className={formActive ? "activeForm" : undefined}
+            onFocus={(_e) => setFormActive(true)}
+            onBlur={(_e) => setFormActive(false)}
+          >
+            {loading ? "Loading..." : "Search"}
+          </button>
+          <button
+            type="reset"
+            className={`${
+              formActive ? "activeForm" : undefined
+            } button-outline`}
+            style={{ marginLeft: "0.5rem" }}
+            onFocus={(_e) => setFormActive(true)}
+            onBlur={(_e) => setFormActive(false)}
+            onClick={(e) => {
+              e.preventDefault();
+              onClear();
+            }}
+            disabled={loading || !query}
+          >
+            Clear
+          </button>
+        </form>
+      </div>
     </div>
   );
 };
@@ -301,7 +292,7 @@ const ListMainlyNorfolk = ({ href = "", title = "", song = {}, setSong }) => {
           {data.tracks.slice(0, limit).map((item) => {
             return (
               <li
-                onClick={(e) => {
+                onClick={(_e) => {
                   setSong(item);
                 }}
                 className={`link ${song?.hash == item.hash && "highlight"}`}
@@ -314,19 +305,17 @@ const ListMainlyNorfolk = ({ href = "", title = "", song = {}, setSong }) => {
         </>
       )}
       {message && (
-        <li className="column">
-          <div> {message} </div>
-          {linkout && (
-            <div>
-              <a href={linkout} target="_blank">
-                Visit MainlyNorfolk for &quot;<em>{title}</em>&quot;
-                <i
-                  className="fa-solid fa-arrow-up-right-from-square end-enhancer"
-                  style={{ fontSize: "1rem" }}
-                ></i>
-              </a>
-            </div>
-          )}
+        <li>
+          {message}
+          {/* {linkout && (
+            <a href={linkout} target="_blank">
+              {"  "} Visit MainlyNorfolk for &quot;<em>{title}</em>&quot;
+              <i
+                className="fa-solid fa-arrow-up-right-from-square end-enhancer"
+                style={{ fontSize: "1rem" }}
+              ></i>
+            </a>
+          )} */}
         </li>
       )}
       {loading && <Spinner />}
@@ -341,8 +330,7 @@ const LimitButton = ({ data = [], limit, setLimit, defaultLimit = 3 }) => {
       {data?.length > defaultLimit && (
         <button
           className="button-small button-outline"
-          // style={{ marginLeft: 0, paddingLeft: 0 }}
-          onClick={(e) => {
+          onClick={(_e) => {
             setLimit(listMax > limit ? listMax : 3);
           }}
         >
@@ -395,17 +383,15 @@ const SearchMainlyNorfolk = ({ setSong = () => {}, song = {} }) => {
           onClear: clear,
         }}
         formId="SearchMainlyNorfolk"
-        // formActive={formActive}
-        // setFormActive={setFormActive}
         autoFocus={true}
       />
 
       {data?.length > 0 && (
-        <div>
-          <div>
+        <div className="card outer">
+          <div className="card inner">
             {data.slice(0, limit).map(({ href, title, hash }) => {
               return (
-                <div className="column column-100">
+                <div className="card section">
                   <h4>
                     <a
                       href={href}
@@ -420,8 +406,8 @@ const SearchMainlyNorfolk = ({ setSong = () => {}, song = {} }) => {
                     >
                       {title}&nbsp;&nbsp;
                       <i
-                        className="fa-solid fa-arrow-up-right-from-square"
-                        style={{ fontSize: "70%", lineHeight: "100%" }}
+                        className="fa-solid fa-arrow-up-right-from-square fa-xs"
+                        // style={{ fontSize: "70%", lineHeight: "100%" }}
                       ></i>
                     </a>
                   </h4>
@@ -434,9 +420,9 @@ const SearchMainlyNorfolk = ({ setSong = () => {}, song = {} }) => {
                 </div>
               );
             })}
-          </div>
-          <div>
-            <LimitButton {...{ limit, setLimit, data }} />
+            <div className="card section">
+              <LimitButton {...{ limit, setLimit, data }} />
+            </div>
           </div>
         </div>
       )}
@@ -458,24 +444,23 @@ const MusixMatchResult = ({ song, setSong, href, artist, track, hash }) => {
   }, [data]);
 
   return (
-    <button
-      className={`invisible`}
-      onClick={(e) => {
+    <span
+      className={`${song && song?.hash == data?.hash && "highlight"} link ${
+        loading && "disabled"
+      }`}
+      onClick={(_e) => {
+        if (song && song.hash == hash) return;
         submit();
       }}
-      style={{ fontWeight: "bolder" }}
     >
-      <span className={`${song?.hash == data?.hash && "highlight"}`}>
-        {track} - {artist}
-      </span>
-    </button>
+      {track} - {artist}
+    </span>
   );
 };
 
 const SearchMusixMatch = ({ song, setSong }) => {
   const [query, setQuery] = useState("Anne Briggs Lowlands");
   const [limit, setLimit] = useState(3);
-  const [formActive, setFormActive] = useState(false);
   const [{ data, status, statusText, message, loading }, submit, clear] =
     useSearchForm({
       endpoint: "/.netlify/functions/get-mm-list",
@@ -499,26 +484,23 @@ const SearchMusixMatch = ({ song, setSong }) => {
         formId="MusixMatch"
         inputName="MusixMatch"
         onClear={clear}
-        // formActive={formActive}
       />
 
       {data?.length > 0 && (
-        <div className="container">
-          <ul className="container">
+        <div className="card outer">
+          <ul className="card inner">
             {data.slice(0, limit).map(({ track, artist, href }) => {
               return (
-                <>
-                  <li className="row">
-                    <MusixMatchResult
-                      song={song}
-                      setSong={setSong}
-                      track={track}
-                      href={href}
-                      artist={artist}
-                      hash={data?.hash}
-                    />
-                  </li>
-                </>
+                <li className="card section">
+                  <MusixMatchResult
+                    song={song}
+                    setSong={setSong}
+                    track={track}
+                    href={href}
+                    artist={artist}
+                    hash={data?.hash}
+                  />
+                </li>
               );
             })}
           </ul>
@@ -533,22 +515,33 @@ const SearchMusixMatch = ({ song, setSong }) => {
 const UltimateGuitarSearch = ({ artist, track, searchQuery }) => {
   return (
     <a
-      className="button button-small"
-      style={{
-        // maxWidth: "200px",
-        // overflow: "hidden",
-        // wordBreak: "break-all",
-        textOverflow: "ellipsis",
-        // display: "block",
-      }}
+      className="button button-small button-outline"
       target="_blank"
       href={`https://www.ultimate-guitar.com/search.php?search_type=title&value=${encodeURIComponent(
         searchQuery ?? (artist && track ? `${artist} ${track}` : track)
       )}`}
     >
+      <i className="fa-solid fa-search start-enhancer"></i>
       UltimateGuitar
-      {/* {searchQuery ?? (artist && track ? `${artist} ${track}` : track || title)}{" "} */}
-      <i className="fa-solid fa-arrow-up-right-from-square end-enhancer"></i>
+      {/* <i className="fa-solid fa-arrow-up-right-from-square end-enhancer"></i> */}
+    </a>
+  );
+};
+
+const YoutubeSearch = ({ artist = "", track = "", fallbackTitle = "" }) => {
+  const searchItem =
+    artist && track ? `${artist} ${track}` : fallbackTitle || track;
+  return (
+    <a
+      className="button button-small button-outline"
+      href={`https://www.youtube.com/results?search_query=${encodeURIComponent(
+        searchItem
+      )}`}
+      target="_blank"
+      role="button"
+      style={{ marginLeft: "0.5rem" }}
+    >
+      <i className="fa-solid fa-search start-enhancer"></i>YouTube
     </a>
   );
 };
@@ -568,40 +561,46 @@ const Song = ({ song = EMPTY_SONG }) => {
   const heading =
     track && artist ? `${artist} – ${track}` : fallbackTitle || track;
   return (
-    <div className="container">
-      <h3>{heading}</h3>
-      {source && (
-        <a
-          href={source}
-          target="_blank"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            fontSize: "small",
-            lineHeight: 1.7,
-            marginBottom: "1rem",
-          }}
-        >
-          <div>{source}</div>
-          <i
-            className="fa-solid fa-arrow-up-right-from-square end-enhancer"
-            style={{
-              fontSize: "0.8rem",
-              height: "0.8rem",
-              lineHeight: "0.8rem",
-            }}
-          ></i>
-        </a>
-      )}
-      <UltimateGuitarSearch
-        artist={artist}
-        track={track}
-        searchQuery={
-          track && artist ? `${artist} ${track}` : fallbackTitle || track
-        }
-      />
-      <YoutubeSearch {...{ ...song }} />
-      <div>{verses && <Verses verses={verses} />};</div>
+    <div className="card outer">
+      <div className="card inner">
+        <h3 className="card section">{heading}</h3>
+        {source && (
+          <div className="card section">
+            <a
+              href={source}
+              target="_blank"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                fontSize: "small",
+                lineHeight: 1.7,
+                marginBottom: "1rem",
+              }}
+            >
+              <div>{source}</div>
+              <i
+                className="fa-solid fa-arrow-up-right-from-square end-enhancer"
+                style={{
+                  fontSize: "0.8rem",
+                  height: "0.8rem",
+                  lineHeight: "0.8rem",
+                }}
+              ></i>
+            </a>
+          </div>
+        )}
+        <UltimateGuitarSearch
+          artist={artist}
+          track={track}
+          searchQuery={
+            track && artist ? `${artist} ${track}` : fallbackTitle || track
+          }
+        />
+        <YoutubeSearch {...{ ...song }} />
+        <div className="card section">
+          {verses && <Verses verses={verses} />}
+        </div>
+      </div>
     </div>
   );
 };
@@ -616,12 +615,13 @@ const App = () => {
 
   const setSong = (song) => {
     _setSong(song);
+    console.log(`[=] new song:`, song);
     setStatus({ hasSong: true, loading: false, error: false });
     localStorage.setItem("latest-song", str(song));
   };
 
   useEffect(() => {
-    if (!song.hash && localStorage.getItem("latest-song")) {
+    if (!hasSong && localStorage.getItem("latest-song")) {
       try {
         _setSong(JSON.parse(localStorage.getItem("latest-song")));
       } catch {}
@@ -632,7 +632,19 @@ const App = () => {
     <div className="container">
       <div className="home">
         <header className="row">
-          <h1>Music Searcher Thing</h1>
+          <div className="column">
+            <h1>
+              <i className="fa-solid fa-guitar fa-2x"></i>Mainly Norfolk
+              Decolumner
+            </h1>
+            <h6>
+              Search and copy lyrics from{" "}
+              <a target="_blank">
+                mainlynorfolk.info
+                <i className="fa-solid fa-xs fa-arrow-up-right-from-square end-enhancer"></i>
+              </a>
+            </h6>
+          </div>
         </header>
         <div className="row">
           <div className="column column-33">
@@ -647,13 +659,8 @@ const App = () => {
             {song.hash && <Song song={song} />}
           </div>
         </div>
-        <pre className="row">Results</pre>
-        <code
-          className="row"
-          style={{ overflowY: "scroll", whiteSpace: "normal" }}
-        >
-          {JSON.stringify({ song })}
-        </code>
+        <h2>Debugger</h2>
+        <pre>{JSON.stringify({ song }, null, 2)}</pre>
       </div>
     </div>
   );
