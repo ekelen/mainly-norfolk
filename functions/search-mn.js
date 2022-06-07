@@ -62,6 +62,12 @@ exports.handler = async (event, _context) => {
         }
         links.forEach(hashIt);
       });
+    if (links.length < 1) {
+      return {
+        statusCode: 404,
+        body: str({ error: "No results found." }),
+      };
+    }
     return { statusCode: 200, body: str({ data: links }) };
   } catch (scrapeMainlyNorfolkError) {
     return {

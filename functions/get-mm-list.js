@@ -61,6 +61,9 @@ const getTracks = async (query = "") => {
   goodLinks.forEach((l) =>
     hashIt({ artist: l.artist, href: l.href, track: l.track })
   );
+  if (goodLinks.length < 1) {
+    throw new Error("No results found.");
+  }
   return goodLinks;
 };
 
@@ -74,7 +77,7 @@ exports.handler = async (event, _context) => {
     };
   } catch (error) {
     return {
-      statusCode: error.status ?? 500,
+      statusCode: error?.status ?? 500,
       body: str({ error: error.message }),
     };
   }

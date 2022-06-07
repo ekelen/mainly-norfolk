@@ -5,15 +5,71 @@ body {
   color: rgb(209, 209, 209);
 }
 
+.disabled {
+  background-color: rgba(255, 255, 255, 0);
+  color: gray;
+  text-decoration: none;
+  cursor: default;
+}
+
+p {
+  line-height: 1.2em;
+  margin-bottom: 0.12rem;
+}
+
+.round {
+  border-radius: 0.4rem;
+}
+
+.border {
+  border: 0.1rem solid #d1d1d1;
+}
+
 pre {
   font-family: "Courier New", Courier, monospace;
   font-size: 1rem;
+  background-color: black;
+  color: white;
 }
 
 h1,
 h2,
 h3 {
   font-size: 2.8rem;
+  margin-bottom: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-bottom: 0;
+}
+
+.flex-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.width-100 {
+  width: 100%;
+}
+
+.align-center {
+  display: flex;
+  align-items: center;
+}
+
+.space-vertical {
+  padding: 1rem 0;
 }
 
 div.wrapper {
@@ -35,6 +91,16 @@ div.card.outer {
   background-color: #333;
   display: flex;
   margin-bottom: 2rem;
+  margin-right: 1rem;
+
+}
+
+div.container {
+  margin: 0 auto;
+  max-width: 112rem;
+  padding: 0 2rem;
+  position: relative;
+  width: 100%;
 }
 
 h1 {
@@ -138,15 +204,17 @@ input[type="week"]:focus,
 input:not([type]):focus,
 textarea:focus,
 select:focus {
-  border-color: rgb(104, 154, 170);
+  /* border-color: rgb(104, 154, 170); */
   outline: 0;
-  color: rgb(104, 154, 170);
+  color: rgb(207, 235, 245);
+  box-shadow: 1.5px 1.5px 10px 0px rgba(104, 154, 170, 0.4);
+  border: 3px solid rgba(142, 207, 228, 0.9);
 }
 
-div.card.outer.activeForm {
+/* .activeForm input {
   box-shadow: 1.5px 1.5px 10px 0px rgba(104, 154, 170, 0.4);
   border: 4px double rgba(104, 154, 170, 0.9);
-}
+} */
 
 div.card.outer {
   box-shadow: 1.5px 1.5px 10px 0px rgba(104, 154, 170, 0);
@@ -199,6 +267,24 @@ input[type="submit"] {
   color: #fff;
 }
 
+button.activeForm:focus,
+button.button:focus,
+button.button:active,
+a.button:focus,
+a:focus {
+  outline: 1px;
+  outline-offset: 2px;
+  outline-color: rgb(104, 154, 170);
+  outline-style: solid;
+}
+
+.button-small {
+  font-size: 0.8rem;
+  height: 2.8rem;
+  line-height: 2.8rem;
+  padding: 0 1.5rem;
+}
+
 .button:focus,
 .button:hover,
 button:focus,
@@ -239,35 +325,47 @@ input[type="submit"].button-outline:hover {
   color: #606c76;
 }
 
-button.activeForm:focus,
-button.button:focus,
-button.button:active,
-a.button:focus,
-a:focus {
-  outline: 1px;
-  outline-offset: 2px;
-  outline-color: rgb(104, 154, 170);
-  outline-style: solid;
+
+
+
+
+.button[disabled],
+button[disabled],
+input[type='button'][disabled],
+input[type='reset'][disabled],
+input[type='submit'][disabled] {
+  cursor: default;
+  opacity: .5;
 }
 
-button.invisible,
-.button.invisible {
-  background-color: transparent;
-  padding: 0;
-  margin: 0;
-  color: unset;
-  border: unset;
-  display: inline;
-  position: relative;
-  width: unset;
+.button[disabled]:focus, .button[disabled]:hover,
+button[disabled]:focus,
+button[disabled]:hover,
+input[type='button'][disabled]:focus,
+input[type='button'][disabled]:hover,
+input[type='reset'][disabled]:focus,
+input[type='reset'][disabled]:hover,
+input[type='submit'][disabled]:focus,
+input[type='submit'][disabled]:hover {
+  background-color: rgb(104, 154, 170);
+  border-color: rgb(104, 154, 170);
 }
 
-.button-small {
-  font-size: 0.8rem;
-  height: 2.8rem;
-  line-height: 2.8rem;
-  padding: 0 1.5rem;
+.button.button-outline[disabled]:focus, .button.button-outline[disabled]:hover,
+button.button-outline[disabled]:focus,
+button.button-outline[disabled]:hover,
+input[type='button'].button-outline[disabled]:focus,
+input[type='button'].button-outline[disabled]:hover,
+input[type='reset'].button-outline[disabled]:focus,
+input[type='reset'].button-outline[disabled]:hover,
+input[type='submit'].button-outline[disabled]:focus,
+input[type='submit'].button-outline[disabled]:hover {
+  border-color: inherit;
+  color: rgb(104, 154, 170);
+  background-color: rgba(104, 154, 170, 0);
 }
+
+
 
 .end-enhancer {
   margin-left: 3px;
@@ -284,22 +382,4 @@ div.card .highlight {
   color: rgb(155, 232, 232);
 }
 
-div.card .disabled {
-  background-color: rgba(255, 255, 255, 0);
-  color: gray;
-  text-decoration: none;
-  cursor: default;
-}
 
-p {
-  line-height: 1.2em;
-  margin-bottom: 0.12rem;
-}
-
-.round {
-  border-radius: 0.4rem;
-}
-
-.border {
-  border: 0.1rem solid #d1d1d1;
-}

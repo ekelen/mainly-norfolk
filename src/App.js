@@ -28,6 +28,24 @@ const EMPTY_SONG = {
   fallbackTitle: "",
 };
 
+const Header = () => (
+  <header
+    className="flex-row width-100 align-center space-vertical"
+    style={{ justifyContent: "space-between", paddingRight: "1rem" }}
+  >
+    <h1 className="align-center">
+      <i className="fa-solid fa-guitar fa-2x"></i>Mainly Norfolk Decolumner
+    </h1>
+    <h6>
+      Search and copy lyrics from{" "}
+      <a target="_blank" href="https://mainlynorfolk.info">
+        mainlynorfolk.info
+        <i className="fa-solid fa-xs fa-arrow-up-right-from-square end-enhancer"></i>
+      </a>
+    </h6>
+  </header>
+);
+
 const Spinner = () => (
   <div style={{ textAlign: "center" }}>
     <i className="fa-solid fa-spinner fa-spin-pulse"></i>
@@ -61,6 +79,7 @@ const Copy = (props = { text: "" }) => {
   return (
     <button
       className="button button-small"
+      style={{ marginRight: "0.5rem" }}
       onClick={(_e) => {
         navigator.clipboard.writeText(props.text);
         setShowCopySuccess(true);
@@ -80,17 +99,16 @@ const Copy = (props = { text: "" }) => {
 };
 
 const Verses = ({ verses = [] }) => {
-  return (
+  return _.compact(verses).length > 0 ? (
     <>
-      <div>
-        <Copy text={verses.join("\n\n")} />
-      </div>
       <div>
         {verses.map((v, i) => (
           <Verse key={i} verse={v} />
         ))}
       </div>
     </>
+  ) : (
+    <p>No lyrics found! ☹️</p>
   );
 };
 
@@ -202,66 +220,65 @@ const SearchForm = ({
   loading = false,
   formId = "",
   inputName = "",
-  // formActive = false,
   autoFocus = false,
   onClear = () => {},
+  message = "",
 }) => {
   const [formActive, setFormActive] = useState(false);
   return (
-    <div className={`card outer ${formActive ? "activeForm" : undefined}`}>
-      <div className="card inner">
-        <form
-          id={formId}
-          name={formId}
-          onSubmit={(e) => {
-            e.preventDefault();
-            onSubmit();
+    <div className={`card section ${formActive ? "activeForm" : undefined}`}>
+      <form
+        id={formId}
+        name={formId}
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSubmit();
+        }}
+        className="card section"
+      >
+        <label htmlFor={`${formId}-field`}>{inputName}</label>
+        <input
+          autoFocus={autoFocus}
+          onFocus={() => {
+            setFormActive(true);
           }}
-          className="card section"
+          onBlur={() => {
+            setFormActive(false);
+          }}
+          type="text"
+          id={`${formId}-field`}
+          name={`${formId}-field`}
+          value={query}
+          onChange={(e) => {
+            inputHandler(e.target.value);
+          }}
+        />
+        <button
+          type="submit"
+          className={formActive ? "activeForm" : undefined}
+          onFocus={(_e) => setFormActive(true)}
+          onBlur={(_e) => setFormActive(false)}
+          style={{ marginRight: "0.5rem" }}
+          disabled={query.length < 1 || loading}
         >
-          <label htmlFor={`${formId}-field`}>{inputName}</label>
-          <input
-            autoFocus={autoFocus}
-            onFocus={() => {
-              setFormActive(true);
-            }}
-            onBlur={() => {
-              setFormActive(false);
-            }}
-            type="text"
-            id={`${formId}-field`}
-            name={`${formId}-field`}
-            value={query}
-            onChange={(e) => {
-              inputHandler(e.target.value);
-            }}
-          />
-          <button
-            type="submit"
-            className={formActive ? "activeForm" : undefined}
-            onFocus={(_e) => setFormActive(true)}
-            onBlur={(_e) => setFormActive(false)}
-          >
-            {loading ? "Loading..." : "Search"}
-          </button>
-          <button
-            type="reset"
-            className={`${
-              formActive ? "activeForm" : undefined
-            } button-outline`}
-            style={{ marginLeft: "0.5rem" }}
-            onFocus={(_e) => setFormActive(true)}
-            onBlur={(_e) => setFormActive(false)}
-            onClick={(e) => {
-              e.preventDefault();
-              onClear();
-            }}
-            disabled={loading || !query}
-          >
-            Clear
-          </button>
-        </form>
-      </div>
+          {loading ? "Loading..." : "Search"}
+        </button>
+        <button
+          type="reset"
+          className={`${formActive ? "activeForm" : undefined} button-outline`}
+          onFocus={(_e) => setFormActive(true)}
+          onBlur={(_e) => setFormActive(false)}
+          onClick={(e) => {
+            e.preventDefault();
+            inputHandler(() => "");
+            onClear();
+          }}
+          disabled={loading || !query}
+        >
+          Clear
+        </button>
+      </form>
+      {message && <div>Error: {message}</div>}
     </div>
   );
 };
@@ -296,6 +313,7 @@ const ListMainlyNorfolk = ({ href = "", title = "", song = {}, setSong }) => {
                   setSong(item);
                 }}
                 className={`link ${song?.hash == item.hash && "highlight"}`}
+                key={`${item.hash}`}
               >
                 {bulletText(item)}
               </li>
@@ -373,7 +391,7 @@ const SearchMainlyNorfolk = ({ setSong = () => {}, song = {} }) => {
   );
 
   return (
-    <div className="col-center">
+    <>
       <SearchForm
         {...{
           onSubmit: submit,
@@ -381,53 +399,51 @@ const SearchMainlyNorfolk = ({ setSong = () => {}, song = {} }) => {
           query,
           inputName: "Mainly Norfolk",
           onClear: clear,
+          message,
         }}
         formId="SearchMainlyNorfolk"
         autoFocus={true}
       />
-
+      {loading && <Spinner />}
       {data?.length > 0 && (
-        <div className="card outer">
-          <div className="card inner">
-            {data.slice(0, limit).map(({ href, title, hash }) => {
-              return (
-                <div className="card section">
-                  <h4>
-                    <a
-                      href={href}
-                      target="_blank"
-                      style={
-                        {
-                          // display: "block inline-flex",
-                          // alignItems: "center",
-                          // verticalAlign: "center",
-                        }
-                      }
-                    >
-                      {title}&nbsp;&nbsp;
-                      <i
-                        className="fa-solid fa-arrow-up-right-from-square fa-xs"
-                        // style={{ fontSize: "70%", lineHeight: "100%" }}
-                      ></i>
-                    </a>
-                  </h4>
-                  <ListMainlyNorfolk
+        <div className="card section">
+          {data.slice(0, limit).map(({ href, title, hash }) => {
+            return (
+              <div className="card section">
+                <h4>
+                  <a
                     href={href}
-                    title={title}
-                    hash={hash}
-                    {...{ setSong, song }}
-                  />
-                </div>
-              );
-            })}
-            <div className="card section">
-              <LimitButton {...{ limit, setLimit, data }} />
-            </div>
+                    target="_blank"
+                    style={
+                      {
+                        // display: "block inline-flex",
+                        // alignItems: "center",
+                        // verticalAlign: "center",
+                      }
+                    }
+                  >
+                    {title}&nbsp;&nbsp;
+                    <i
+                      className="fa-solid fa-arrow-up-right-from-square fa-xs"
+                      // style={{ fontSize: "70%", lineHeight: "100%" }}
+                    ></i>
+                  </a>
+                </h4>
+                <ListMainlyNorfolk
+                  href={href}
+                  title={title}
+                  hash={hash}
+                  {...{ setSong, song }}
+                />
+              </div>
+            );
+          })}
+          <div className="card section">
+            <LimitButton {...{ limit, setLimit, data }} />
           </div>
         </div>
       )}
-      {loading && <Spinner />}
-    </div>
+    </>
   );
 };
 
@@ -459,7 +475,7 @@ const MusixMatchResult = ({ song, setSong, href, artist, track, hash }) => {
 };
 
 const SearchMusixMatch = ({ song, setSong }) => {
-  const [query, setQuery] = useState("Anne Briggs Lowlands");
+  const [query, setQuery] = useState("Anne Briggs");
   const [limit, setLimit] = useState(3);
   const [{ data, status, statusText, message, loading }, submit, clear] =
     useSearchForm({
@@ -478,17 +494,17 @@ const SearchMusixMatch = ({ song, setSong }) => {
   );
 
   return (
-    <div>
+    <>
       <SearchForm
-        {...{ onSubmit: submit, inputHandler, query }}
+        {...{ onSubmit: submit, inputHandler, query, message }}
         formId="MusixMatch"
         inputName="MusixMatch"
         onClear={clear}
       />
 
       {data?.length > 0 && (
-        <div className="card outer">
-          <ul className="card inner">
+        <>
+          <ul className="card section">
             {data.slice(0, limit).map(({ track, artist, href }) => {
               return (
                 <li className="card section">
@@ -505,10 +521,10 @@ const SearchMusixMatch = ({ song, setSong }) => {
             })}
           </ul>
           <LimitButton {...{ limit, setLimit, data }} />
-        </div>
+        </>
       )}
       {loading && <Spinner />}
-    </div>
+    </>
   );
 };
 
@@ -589,6 +605,7 @@ const Song = ({ song = EMPTY_SONG }) => {
             </a>
           </div>
         )}
+        <Copy text={verses.join("\n\n")} />
         <UltimateGuitarSearch
           artist={artist}
           track={track}
@@ -598,7 +615,7 @@ const Song = ({ song = EMPTY_SONG }) => {
         />
         <YoutubeSearch {...{ ...song }} />
         <div className="card section">
-          {verses && <Verses verses={verses} />}
+          <Verses verses={verses} />
         </div>
       </div>
     </div>
@@ -606,17 +623,17 @@ const Song = ({ song = EMPTY_SONG }) => {
 };
 
 const App = () => {
-  const [{ hasSong, loading, error }, setStatus] = useState({
+  const [{ hasSong }, setStatus] = useState({
     hasSong: false,
-    loading: false,
-    error: null,
   });
   const [song, _setSong] = useState(EMPTY_SONG);
 
   const setSong = (song) => {
     _setSong(song);
-    console.log(`[=] new song:`, song);
     setStatus({ hasSong: true, loading: false, error: false });
+    if (!song.verses?.length) {
+      return;
+    }
     localStorage.setItem("latest-song", str(song));
   };
 
@@ -631,33 +648,46 @@ const App = () => {
   return (
     <div className="container">
       <div className="home">
-        <header className="row">
-          <div className="column">
-            <h1>
-              <i className="fa-solid fa-guitar fa-2x"></i>Mainly Norfolk
-              Decolumner
-            </h1>
-            <h6>
-              Search and copy lyrics from{" "}
-              <a target="_blank">
-                mainlynorfolk.info
-                <i className="fa-solid fa-xs fa-arrow-up-right-from-square end-enhancer"></i>
-              </a>
-            </h6>
-          </div>
-        </header>
-        <div className="row">
-          <div className="column column-33">
-            <div>
-              <SearchMainlyNorfolk setSong={setSong} song={song} />
+        <Header />
+        <div
+          className="flex-row width-100"
+          style={{
+            alignItems: "flex-start",
+            marginRight: "1rem",
+            // flexBasis: "15%",
+            // flexGrow: 10,
+          }}
+        >
+          <div
+            style={{
+              flexBasis: "300px",
+              flexGrow: 1,
+              flexShrink: 0,
+            }}
+          >
+            <div className="card outer">
+              <div className="card inner">
+                <SearchMainlyNorfolk setSong={setSong} song={song} />
+              </div>
             </div>
-            <div>
-              <SearchMusixMatch setSong={setSong} song={song} />
+            <div className="card outer">
+              <div className="card inner">
+                <SearchMusixMatch setSong={setSong} song={song} />
+              </div>
             </div>
           </div>
-          <div className="column column-67">
-            {song.hash && <Song song={song} />}
-          </div>
+          {song.hash && (
+            <div
+              className="flex-column"
+              style={{
+                flexBasis: "70%",
+                flexShrink: 1,
+                flexGrow: 1,
+              }}
+            >
+              {song.hash && <Song song={song} />}
+            </div>
+          )}
         </div>
         <h2>Debugger</h2>
         <pre>{JSON.stringify({ song }, null, 2)}</pre>

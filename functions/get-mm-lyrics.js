@@ -1,6 +1,7 @@
 const fetch = require("node-fetch");
 const cheerio = require("cheerio");
 const path = require("path");
+const _ = require("lodash");
 
 const url = "https://www.musixmatch.com";
 
@@ -47,7 +48,11 @@ const getLyricsFromPage = async (uri = "") => {
       text: $(this).text(),
     });
   });
-  verses = verses.map((l) => `${l.text}`).join("\n");
+  verses = _.compact(verses.map((l) => `${l.text}`));
+  if (verses.length < 1) {
+    throw new Error("No lyrics found! Sorry. ☹️");
+  }
+  verses = verses.join("\n");
   verses = verses.split("\n\n");
   const result = { artist, track, verses, source };
   result.hash = hashIt({ artist, href: source, track });
