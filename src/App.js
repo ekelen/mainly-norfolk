@@ -1,11 +1,4 @@
-import {
-  Suspense,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { render } from "react-dom";
 import _ from "lodash";
 
@@ -27,6 +20,8 @@ const EMPTY_SONG = {
   source: "",
   fallbackTitle: "",
 };
+
+const RESULTS_LIMIT = 10;
 
 const Header = () => (
   <header
@@ -288,7 +283,7 @@ const SearchForm = ({
  * @desc Will list the results of a Mainly Norfolk `.json` formatted file
  */
 const ListMainlyNorfolk = ({ href = "", title = "", song = {}, setSong }) => {
-  const [limit, setLimit] = useState(3);
+  const [limit, setLimit] = useState(10);
   const [{ data, loading, message, linkout }, submit, clear] = useSearchForm({
     endpoint: "/.netlify/functions/get-mn-music-from-json",
     options: { method: "POST", body: JSON.stringify({ href }) },
@@ -325,15 +320,15 @@ const ListMainlyNorfolk = ({ href = "", title = "", song = {}, setSong }) => {
       {message && (
         <li>
           {message}
-          {/* {linkout && (
+          {linkout && (
             <a href={linkout} target="_blank">
-              {"  "} Visit MainlyNorfolk for &quot;<em>{title}</em>&quot;
+              &nbsp;MN
               <i
                 className="fa-solid fa-arrow-up-right-from-square end-enhancer"
                 style={{ fontSize: "1rem" }}
               ></i>
             </a>
-          )} */}
+          )}
         </li>
       )}
       {loading && <Spinner />}
@@ -341,15 +336,16 @@ const ListMainlyNorfolk = ({ href = "", title = "", song = {}, setSong }) => {
   );
 };
 
-const LimitButton = ({ data = [], limit, setLimit, defaultLimit = 3 }) => {
+const LimitButton = ({ data = [], limit, setLimit }) => {
   const listMax = data.length + 1;
+
   return (
     <>
-      {data?.length > defaultLimit && (
+      {data.length > RESULTS_LIMIT && (
         <button
           className="button-small button-outline"
           onClick={(_e) => {
-            setLimit(listMax > limit ? listMax : 3);
+            setLimit(listMax > limit ? listMax : RESULTS_LIMIT);
           }}
         >
           <i
@@ -368,8 +364,12 @@ const LimitButton = ({ data = [], limit, setLimit, defaultLimit = 3 }) => {
 };
 
 const SearchMainlyNorfolk = ({ setSong = () => {}, song = {} }) => {
-  const [query, setQuery] = useState("The King");
-  const [limit, setLimit] = useState(3);
+  const [query, setQuery] = useState(() => {
+    const dateObj = new Date();
+    const monthNameLong = dateObj.toLocaleString("en-US", { month: "long" });
+    return monthNameLong;
+  });
+  const [limit, setLimit] = useState(10);
   const [
     { data, status, statusText, message, loading, linkout },
     submit,
@@ -397,7 +397,7 @@ const SearchMainlyNorfolk = ({ setSong = () => {}, song = {} }) => {
           onSubmit: submit,
           inputHandler,
           query,
-          inputName: "Mainly Norfolk",
+          inputName: "Song Title or Artist",
           onClear: clear,
           message,
         }}
@@ -411,22 +411,9 @@ const SearchMainlyNorfolk = ({ setSong = () => {}, song = {} }) => {
             return (
               <div className="card section">
                 <h4>
-                  <a
-                    href={href}
-                    target="_blank"
-                    style={
-                      {
-                        // display: "block inline-flex",
-                        // alignItems: "center",
-                        // verticalAlign: "center",
-                      }
-                    }
-                  >
+                  <a href={href} target="_blank">
                     {title}&nbsp;&nbsp;
-                    <i
-                      className="fa-solid fa-arrow-up-right-from-square fa-xs"
-                      // style={{ fontSize: "70%", lineHeight: "100%" }}
-                    ></i>
+                    <i className="fa-solid fa-arrow-up-right-from-square fa-xs"></i>
                   </a>
                 </h4>
                 <ListMainlyNorfolk
@@ -443,88 +430,6 @@ const SearchMainlyNorfolk = ({ setSong = () => {}, song = {} }) => {
           </div>
         </div>
       )}
-    </>
-  );
-};
-
-const MusixMatchResult = ({ song, setSong, href, artist, track, hash }) => {
-  const [{ data, loading, message }, submit] = useSearchForm({
-    endpoint: "/.netlify/functions/get-mm-lyrics",
-    options: { method: "POST", body: JSON.stringify({ uri: href }) },
-    localStorageKey: hash ? `MUSIXMATCH_RESULT_${hash}` : undefined,
-  });
-
-  useEffect(() => {
-    if (data?.hash && song?.hash && song?.hash !== data?.hash) {
-      setSong(data);
-    }
-  }, [data]);
-
-  return (
-    <span
-      className={`${song && song?.hash == data?.hash && "highlight"} link ${
-        loading && "disabled"
-      }`}
-      onClick={(_e) => {
-        if (song && song.hash == hash) return;
-        submit();
-      }}
-    >
-      {track} - {artist}
-    </span>
-  );
-};
-
-const SearchMusixMatch = ({ song, setSong }) => {
-  const [query, setQuery] = useState("Anne Briggs");
-  const [limit, setLimit] = useState(3);
-  const [{ data, status, statusText, message, loading }, submit, clear] =
-    useSearchForm({
-      endpoint: "/.netlify/functions/get-mm-list",
-      localStorageKey: `MUSIXMATCH_RESULTS`,
-      options: {
-        method: "POST",
-        body: JSON.stringify({
-          query,
-        }),
-      },
-    });
-  const inputHandler = useMemo(
-    () => _.debounce((val) => setQuery(val), 10),
-    []
-  );
-
-  return (
-    <>
-      <SearchForm
-        {...{ onSubmit: submit, inputHandler, query, message }}
-        formId="MusixMatch"
-        inputName="MusixMatch"
-        onClear={clear}
-      />
-
-      {data?.length > 0 && (
-        <>
-          <ul className="card section">
-            {data.slice(0, limit).map(({ track, artist, href }) => {
-              return (
-                <li className="card section">
-                  <MusixMatchResult
-                    song={song}
-                    setSong={setSong}
-                    track={track}
-                    href={href}
-                    artist={artist}
-                    hash={data?.hash}
-                  />
-                </li>
-              );
-            })}
-          </ul>
-          <LimitButton {...{ limit, setLimit, data }} />
-        </>
-      )}
-      {loading && <Spinner />}
     </>
   );
 };
@@ -659,8 +564,6 @@ const App = () => {
           style={{
             alignItems: "flex-start",
             marginRight: "1rem",
-            // flexBasis: "15%",
-            // flexGrow: 10,
           }}
         >
           <div
@@ -673,11 +576,6 @@ const App = () => {
             <div className="card outer">
               <div className="card inner">
                 <SearchMainlyNorfolk setSong={setSong} song={song} />
-              </div>
-            </div>
-            <div className="card outer">
-              <div className="card inner">
-                <SearchMusixMatch setSong={setSong} song={song} />
               </div>
             </div>
           </div>
