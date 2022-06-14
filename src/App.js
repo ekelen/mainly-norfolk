@@ -453,6 +453,7 @@ const MusixMatchResult = ({ song, setSong, href, artist, track, hash }) => {
     options: { method: "POST", body: JSON.stringify({ uri: href }) },
     localStorageKey: hash ? `MUSIXMATCH_RESULT_${hash}` : undefined,
   });
+
   useEffect(() => {
     if (data?.hash && song?.hash && song?.hash !== data?.hash) {
       setSong(data);
@@ -627,9 +628,13 @@ const App = () => {
     hasSong: false,
   });
   const [song, _setSong] = useState(EMPTY_SONG);
+  const myRef = useRef(null);
+
+  const executeScroll = () => myRef.current.scrollIntoView();
 
   const setSong = (song) => {
     _setSong(song);
+    executeScroll();
     setStatus({ hasSong: true, loading: false, error: false });
     if (!song.verses?.length) {
       return;
@@ -647,7 +652,7 @@ const App = () => {
 
   return (
     <div className="container">
-      <div className="home">
+      <div className="home" ref={myRef}>
         <Header />
         <div
           className="flex-row width-100"
