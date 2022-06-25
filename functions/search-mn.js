@@ -51,13 +51,12 @@ exports.handler = async (event, _context) => {
       .children("a")
       .each(function (_i, _el) {
         const title = $(this).text().trim();
-        const href = path.join(url, $(this).attr("href").slice("../..".length));
-        if (title && href) {
-          // TODO: Titles that don't fit this pattern
+        const href = new URL($(this).attr("href"), url).href;
 
+        if (title && href) {
           links.push({
             title,
-            href: path.join(url, $(this).attr("href").slice("../..".length)),
+            href,
           });
         }
         links.forEach(hashIt);
